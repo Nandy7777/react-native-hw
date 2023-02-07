@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,100 +13,137 @@ import {
   Dimensions,
 } from 'react-native';
 
-import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
-
 const initialState = {
   email: '',
   password: '',
+  nickname: '',
 };
 
-const loadApplication = async () => {
-  await Font.loadAsync({
-    'DMMono-Regular': require('./assets/fonts/DMMono-Regular.ttf'),
-  });
-};
-
-export default function App() {
+export default function RegistrationScreen() {
   console.log(Platform.OS);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [state, setstate] = useState(initialState);
-  const [iasReady, setIasReady] = useState(false);
-
-  const [dimensions, setdimensions] = useState(Dimensions.get('window').width - 20 * 2);
-
-  useEffect(() => {
-    const onChange = () => {
-      const width = Dimensions.get('window').width - 20 * 2;
-
-      setdimensions(width);
-    };
-    Dimensions.addEventListener('change', onChange);
-    return () => {
-      Dimensions.removeEventListener('change', onChange);
-    };
-  }, []);
+  const [state, setState] = useState(initialState);
+  const [isFocused, setIsFocused] = useState(false);
 
   const keyboardHide = () => {
-    setIsShowKeyboard(false);
+    setIsShowKeyboard(false); 
     Keyboard.dismiss();
-    console.log(state);
-    setstate(initialState);
   };
 
-  if (!iasReady) {
-    return (
-      <AppLoading
-        startAsync={loadApplication}
-        onFinish={() => setIasReady(true)}
-        onError={console.warn}
-      />
-    );
-  }
+  const keboardHideAndSubmit = () => {
+    setIsShowKeyboard(false);
+    setIsFocused(false);
+    Keyboard.dismiss();
+    console.log('state:', state); 
+    setState(initialState);
+  };
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <ImageBackground
-          style={styles.image}
-          source={require('../assets/back-ground.jpg')}
+          style={{
+            ...styles.image,
+            width: windowWidth,
+            height: windowHeight,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+          }}
+          source={require('../assets/images/back-ground.jpg')}
         >
-          <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
+          <KeyboardAvoidingView
+          // behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+          >
             <View
               style={{
-                ...styles.form,
-                marginBottom: isShowKeyboard ? 20 : 150,
-                width: dimensions,
+                ...styles.whiteContainer,
+                marginBottom: isShowKeyboard ? 200 : 0,
               }}
             >
-              <View style={styles.header}>
-                <Text style={styles.headerTitle}>Hello again</Text>
-                <Text style={styles.headerTitle}>Welcome back</Text>
+              <View style={styles.photoFrame}></View>
+              <View style={styles.form}>
+                <View style={styles.header}>
+                  <Text style={styles.headerTitle}>Registration</Text>
+                </View>
+                <View>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      backgroundColor: isFocused ? '#FFFFFF' : '#F6F6F6',
+                      color: isFocused ? '#212121' : '#BDBDBD',
+                      borderColor: isFocused ? '#FF6C00' : '#E8E8E8',
+                      marginBottom: 16,
+                    }}
+                    onFocus={() => {
+                      setIsShowKeyboard(true);
+                      setIsFocused(true);
+                    }}
+                    onBlur={() => setIsFocused(false)}
+                    placeholder="Login"
+                    value={state.nickname}
+                    onChangeText={value =>
+                      setState(prevState => ({ ...prevState, nickname: value }))
+                    }
+                  />
+                </View>
+                <View style={{ marginTop: 20 }}>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      backgroundColor: isFocused ? '#FFFFFF' : '#F6F6F6',
+                      color: isFocused ? '#212121' : '#BDBDBD',
+                      borderColor: isFocused ? '#FF6C00' : '#E8E8E8',
+                      marginBottom: 16,
+                    }}
+                    onFocus={() => {
+                      setIsShowKeyboard(true);
+                      setIsFocused(true);
+                    }}
+                    onBlur={() => setIsFocused(false)}
+                    placeholder="Email"
+                    value={state.email}
+                    onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
+                  />
+                </View>
+                <View style={{ marginTop: 20 }}>
+                  <TextInput
+                    style={{
+                      ...styles.input,
+                      backgroundColor: isFocused ? '#FFFFFF' : '#F6F6F6',
+                      color: isFocused ? '#212121' : '#BDBDBD',
+                      borderColor: isFocused ? '#FF6C00' : '#E8E8E8',
+                    }}
+                    onFocus={() => {
+                      setIsShowKeyboard(true);
+                      setIsFocused(true);
+                    }}
+                    onBlur={() => setIsFocused(false)}
+                    placeholder="Password"
+                    value={state.password}
+                    onChangeText={value =>
+                      setState(prevState => ({ ...prevState, password: value }))
+                    }
+                  />
+                </View>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.btnSubmit}
+                  onPress={keboardHideAndSubmit}
+                >
+                  <Text style={styles.btnSubmitText}>SIGN UP</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.btnGoLogin}
+                  onPress={() => console.log('go to Login Page')}
+                >
+                  <Text style={styles.btnGoLoginText}>Already have an account? log in</Text>
+                </TouchableOpacity>
               </View>
-              <View>
-                <Text style={styles.inputTitle}>EMAIL ADDRES</Text>
-                <TextInput
-                  style={styles.input}
-                  textAlign={'center'}
-                  onFocus={() => setIsShowKeyboard(true)}
-                  value={state.email}
-                  onChangeText={value => setstate(prevState => ({ ...prevState, email: value }))}
-                />
-              </View>
-              <View style={{ marginTop: 20 }}>
-                <Text style={styles.inputTitle}>PASSWORD</Text>
-                <TextInput
-                  style={styles.input}
-                  textAlign={'center'}
-                  secureTextEntry={true}
-                  onFocus={() => setIsShowKeyboard(true)}
-                  value={state.password}
-                  onChangeText={value => setstate(prevState => ({ ...prevState, password: value }))}
-                />
-              </View>
-              <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={keyboardHide}>
-                <Text style={styles.btnTitle}>SIGN IN</Text>
-              </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
@@ -122,58 +159,82 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    resizeMode: 'cover',
     justifyContent: 'flex-end',
+    width: '100%',
+    height: '100%',
+  },
+  whiteContainer: {
+    backgroundColor: '#ffffff',
+    // height: 549,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
     alignItems: 'center',
+    // marginBottom: 0,
+  },
+  photoFrame: {
+    width: 120,
+    height: 120,
+    backgroundColor: '#F6F6F6',
+    marginTop: -60,
+    borderRadius: 16,
   },
   input: {
+    marginHorizontal: 16,
+    paddingLeft: 16,
+    width: 343,
+    height: 50,
+    borderColor: '#E8E8E8',
     borderWidth: 1,
-    borderColor: '#f0f8ff',
-    height: 40,
-    borderRadius: 6,
-
-    color: '#f0f8ff',
+    borderRadius: 8,
+    placeholderTextColor: '#BDBDBD',
+    backgroundColor: '#F6F6F6',
+    fontFamily: 'Roboto-Regular',
   },
   form: {
-    // marginHorizontal: 40,
+    alignItems: 'center',
   },
-  inputTitle: {
-    color: '#f0f8ff',
-    marginBottom: 10,
-    fontSize: 18,
-    fontFamily: 'DMMono-Regular',
-  },
-  btn: {
-    borderRadius: 6,
-    borderWidth: 1,
-    height: 40,
-    marginTop: 40,
+  btnSubmit: {
+    marginTop: 43,
+    height: 51,
+    width: 343,
+    backgroundColor: '#FF6C00',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 20,
+    borderRadius: 100,
     ...Platform.select({
       ios: {
         backgroundColor: 'transparent',
         borderColor: '#f0f8ff',
       },
       android: {
-        backgroundColor: '#4169e1',
+        backgroundColor: '#FF6C00',
         borderColor: 'transparent',
       },
     }),
   },
-  btnTitle: {
-    color: Platform.OS === 'ios' ? '#4169e1' : '#f0f8ff',
-    fontSize: 18,
-    fontFamily: 'DMMono-Regular',
+  btnSubmitText: {
+    color: Platform.OS === 'ios' ? '#4169e1' : '#FFFFFF',
+    fontSize: 16,
+    textAlign: 'center',
+    fontFamily: 'Roboto-Regular',
   },
   header: {
     alignItems: 'center',
-    marginBottom: 120,
+    marginBottom: 32,
   },
   headerTitle: {
-    fontSize: 40,
-    color: '#f0f8ff',
-    fontFamily: 'DMMono-Regular',
+    color: '#000000',
+    fontSize: 30,
+    marginTop: 32,
+    fontFamily: 'Roboto-Medium',
+  },
+  btnGoLogin: {
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  btnGoLoginText: {
+    color: '#000000',
+    fontFamily: 'Roboto-Regular',
   },
 });
+
