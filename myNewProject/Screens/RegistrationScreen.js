@@ -11,6 +11,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Dimensions,
+  Image,
 } from 'react-native';
 
 const initialState = {
@@ -23,7 +24,9 @@ export default function RegistrationScreen() {
   console.log(Platform.OS);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocusedL, setIsFocusedL] = useState(false);
+  const [isFocusedE, setIsFocusedE] = useState(false);
+  const [isFocusedP, setIsFocusedP] = useState(false);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false); 
@@ -32,7 +35,6 @@ export default function RegistrationScreen() {
 
   const keboardHideAndSubmit = () => {
     setIsShowKeyboard(false);
-    setIsFocused(false);
     Keyboard.dismiss();
     console.log('state:', state); 
     setState(initialState);
@@ -43,28 +45,33 @@ export default function RegistrationScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container}>
-        <ImageBackground
-          style={{
-            ...styles.image,
-            width: windowWidth,
-            height: windowHeight,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-          }}
-          source={require('../assets/images/back-ground.jpg')}
-        >
-          <KeyboardAvoidingView
-          // behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      <KeyboardAvoidingView
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <View style={styles.container}>
+          <ImageBackground
+            style={{
+              ...styles.image,
+              width: windowWidth,
+              height: windowHeight,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            }}
+            source={require('../assets/images/back-ground.jpg')}
           >
             <View
               style={{
                 ...styles.whiteContainer,
-                marginBottom: isShowKeyboard ? 200 : 0,
+                marginBottom: isShowKeyboard ? 150 : 0,
               }}
             >
-              <View style={styles.photoFrame}></View>
+              <View style={styles.photoFrame}>
+                <View style={styles.btnAdd}>
+                  <Image source={require('../assets/images/add.png')} />
+                </View>
+              </View>
               <View style={styles.form}>
                 <View style={styles.header}>
                   <Text style={styles.headerTitle}>Registration</Text>
@@ -73,16 +80,16 @@ export default function RegistrationScreen() {
                   <TextInput
                     style={{
                       ...styles.input,
-                      backgroundColor: isFocused ? '#FFFFFF' : '#F6F6F6',
-                      color: isFocused ? '#212121' : '#BDBDBD',
-                      borderColor: isFocused ? '#FF6C00' : '#E8E8E8',
+                      backgroundColor: isFocusedL ? '#FFFFFF' : '#F6F6F6',
+                      color: isFocusedL ? '#212121' : '#BDBDBD',
+                      borderColor: isFocusedL ? '#FF6C00' : '#E8E8E8',
                       marginBottom: 16,
                     }}
                     onFocus={() => {
                       setIsShowKeyboard(true);
-                      setIsFocused(true);
+                      setIsFocusedL(true);
                     }}
-                    onBlur={() => setIsFocused(false)}
+                    onBlur={() => setIsFocusedL(false)}
                     placeholder="Login"
                     value={state.nickname}
                     onChangeText={value =>
@@ -94,16 +101,16 @@ export default function RegistrationScreen() {
                   <TextInput
                     style={{
                       ...styles.input,
-                      backgroundColor: isFocused ? '#FFFFFF' : '#F6F6F6',
-                      color: isFocused ? '#212121' : '#BDBDBD',
-                      borderColor: isFocused ? '#FF6C00' : '#E8E8E8',
+                      backgroundColor: isFocusedE ? '#FFFFFF' : '#F6F6F6',
+                      color: isFocusedE ? '#212121' : '#BDBDBD',
+                      borderColor: isFocusedE ? '#FF6C00' : '#E8E8E8',
                       marginBottom: 16,
                     }}
                     onFocus={() => {
                       setIsShowKeyboard(true);
-                      setIsFocused(true);
+                      setIsFocusedE(true);
                     }}
-                    onBlur={() => setIsFocused(false)}
+                    onBlur={() => setIsFocusedE(false)}
                     placeholder="Email"
                     value={state.email}
                     onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
@@ -113,15 +120,15 @@ export default function RegistrationScreen() {
                   <TextInput
                     style={{
                       ...styles.input,
-                      backgroundColor: isFocused ? '#FFFFFF' : '#F6F6F6',
-                      color: isFocused ? '#212121' : '#BDBDBD',
-                      borderColor: isFocused ? '#FF6C00' : '#E8E8E8',
+                      backgroundColor: isFocusedP ? '#FFFFFF' : '#F6F6F6',
+                      color: isFocusedP ? '#212121' : '#BDBDBD',
+                      borderColor: isFocusedP ? '#FF6C00' : '#E8E8E8',
                     }}
                     onFocus={() => {
                       setIsShowKeyboard(true);
-                      setIsFocused(true);
+                      setIsFocusedP(true);
                     }}
-                    onBlur={() => setIsFocused(false)}
+                    onBlur={() => setIsFocusedP(false)}
                     placeholder="Password"
                     value={state.password}
                     onChangeText={value =>
@@ -145,9 +152,9 @@ export default function RegistrationScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-          </KeyboardAvoidingView>
-        </ImageBackground>
-      </View>
+          </ImageBackground>
+        </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 }
@@ -165,11 +172,9 @@ const styles = StyleSheet.create({
   },
   whiteContainer: {
     backgroundColor: '#ffffff',
-    // height: 549,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     alignItems: 'center',
-    // marginBottom: 0,
   },
   photoFrame: {
     width: 120,
@@ -231,10 +236,16 @@ const styles = StyleSheet.create({
   btnGoLogin: {
     alignItems: 'center',
     marginTop: 16,
+    marginBottom: 45,
   },
   btnGoLoginText: {
     color: '#000000',
     fontFamily: 'Roboto-Regular',
+  },
+  btnAdd: {
+    position: "absolute",
+    right: -12.5,
+    bottom: 14,
   },
 });
 
