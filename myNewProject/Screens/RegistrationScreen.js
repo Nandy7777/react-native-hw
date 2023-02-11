@@ -27,6 +27,7 @@ export default function RegistrationScreen() {
   const [isFocusedL, setIsFocusedL] = useState(false);
   const [isFocusedE, setIsFocusedE] = useState(false);
   const [isFocusedP, setIsFocusedP] = useState(false);
+  const [hiddenPass, setHiddenPass] = useState(true);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false); 
@@ -97,7 +98,7 @@ export default function RegistrationScreen() {
                     }
                   />
                 </View>
-                <View style={{ marginTop: 20 }}>
+                <View>
                   <TextInput
                     style={{
                       ...styles.input,
@@ -116,7 +117,7 @@ export default function RegistrationScreen() {
                     onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
                   />
                 </View>
-                <View style={{ marginTop: 20 }}>
+                <View style={styles.inputWrap}>
                   <TextInput
                     style={{
                       ...styles.input,
@@ -129,12 +130,22 @@ export default function RegistrationScreen() {
                       setIsFocusedP(true);
                     }}
                     onBlur={() => setIsFocusedP(false)}
+                    keyboardType="visible-password"
                     placeholder="Password"
                     value={state.password}
                     onChangeText={value =>
                       setState(prevState => ({ ...prevState, password: value }))
                     }
                   />
+                  <TouchableOpacity
+                    style={styles.inputBtn}
+                    activeOpacity={0.7}
+                    onPress={() => setHiddenPass(!hiddenPass)}
+                  >
+                    <Text style={{ ...styles.text, color: '#1B4371' }}>
+                      {hiddenPass ? 'Show password' : 'Hide password'}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
                 <TouchableOpacity
                   activeOpacity={0.8}
@@ -186,7 +197,7 @@ const styles = StyleSheet.create({
   input: {
     marginHorizontal: 16,
     paddingLeft: 16,
-    width: 343,
+    width: '343',
     height: 50,
     borderColor: '#E8E8E8',
     borderWidth: 1,
@@ -243,9 +254,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
   },
   btnAdd: {
-    position: "absolute",
+    position: 'absolute',
     right: -12.5,
     bottom: 14,
+  },
+  inputBtn: {
+    position: 'absolute',
+    top: '30%',
+    right: 40,
+    backgroundColor: 'transparent',
+    color: '#1B4371',
   },
 });
 
