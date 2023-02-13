@@ -34,10 +34,10 @@ export default function RegistrationScreen() {
     Keyboard.dismiss();
   };
 
-  const keboardHideAndSubmit = () => {
+  const onSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log('state:', state); 
+    console.log('state:', state);
     setState(initialState);
   };
 
@@ -125,13 +125,13 @@ export default function RegistrationScreen() {
                       color: isFocusedP ? '#212121' : '#BDBDBD',
                       borderColor: isFocusedP ? '#FF6C00' : '#E8E8E8',
                     }}
+                    placeholder="Password"
+                    secureTextEntry={true}
                     onFocus={() => {
                       setIsShowKeyboard(true);
                       setIsFocusedP(true);
                     }}
                     onBlur={() => setIsFocusedP(false)}
-                    keyboardType="visible-password"
-                    placeholder="Password"
                     value={state.password}
                     onChangeText={value =>
                       setState(prevState => ({ ...prevState, password: value }))
@@ -143,15 +143,11 @@ export default function RegistrationScreen() {
                     onPress={() => setHiddenPass(!hiddenPass)}
                   >
                     <Text style={{ ...styles.text, color: '#1B4371' }}>
-                      {hiddenPass ? 'Show password' : 'Hide password'}
+                      {hiddenPass ? 'Show' : 'Hide'}
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.btnSubmit}
-                  onPress={keboardHideAndSubmit}
-                >
+                <TouchableOpacity activeOpacity={0.8} style={styles.btnSubmit} onPress={onSubmit}>
                   <Text style={styles.btnSubmitText}>SIGN UP</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -197,7 +193,7 @@ const styles = StyleSheet.create({
   input: {
     marginHorizontal: 16,
     paddingLeft: 16,
-    width: '343',
+    width: 343,
     height: 50,
     borderColor: '#E8E8E8',
     borderWidth: 1,
@@ -250,7 +246,7 @@ const styles = StyleSheet.create({
     marginBottom: 45,
   },
   btnGoLoginText: {
-    color: '#000000',
+    color: '#1B4371',
     fontFamily: 'Roboto-Regular',
   },
   btnAdd: {

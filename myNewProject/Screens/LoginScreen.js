@@ -13,6 +13,7 @@ import {
   Dimensions,
 } from 'react-native';
 
+
 const initialState = {
   email: '',
   password: '',
@@ -21,13 +22,13 @@ const initialState = {
 export default function LoginScreen() {
   console.log(Platform.OS);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [state, setstate] = useState(initialState);
+  const [state, setState] = useState(initialState);
 
-  const [dimensions, setdimensions] = useState(Dimensions.get('window').width - 20 * 2);
+  const [dimensions, setdimensions] = useState(Dimensions.get('window').width - 16 * 2);
 
   useEffect(() => {
     const onChange = () => {
-      const width = Dimensions.get('window').width - 20 * 2;
+      const width = Dimensions.get('window').width - 16 * 2;
       setdimensions(width);
     };
     Dimensions.addEventListener('change', onChange);
@@ -36,62 +37,107 @@ export default function LoginScreen() {
     };
   }, []);
 
+  const [isFocusedE, setIsFocusedE] = useState(false);
+  const [isFocusedP, setIsFocusedP] = useState(false);
+  const [hiddenPass, setHiddenPass] = useState(true);
+  
   const keyboardHide = () => {
+   setIsShowKeyboard(false);
+   Keyboard.dismiss();
+ };
+ 
+  const onSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(state);
-    setstate(initialState);
+    console.log('state:', state);
+    setState(initialState);
   };
 
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+  
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container}>
-        <ImageBackground
-          style={styles.image}
-          source={require('../assets/images/back-ground.jpg')}
-        >
-          <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
-            <View
-              style={{
-                ...styles.form,
-                marginBottom: isShowKeyboard ? 20 : 150,
-                width: dimensions,
-              }}
-            >
-              <View style={styles.header}>
-                <Text style={styles.headerTitle}>Hello again</Text>
-                <Text style={styles.headerTitle}>Welcome back</Text>
-              </View>
-              <View>
-                <Text style={styles.inputTitle}>EMAIL ADDRES</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ImageBackground style={styles.image} source={require('../assets/images/back-ground.jpg')}>
+          <View
+            style={{
+              ...styles.container,
+              position: 'relative',
+              marginTop: isShowKeyboard ? 130 : 273,
+            }}
+          >
+            <View style={styles.form}>
+              <Text style={styles.headerTitle}>Login</Text>
+              <View style={styles.inputWrapper}>
                 <TextInput
-                  style={styles.input}
-                  name="hola"
-                  textAlign={'center'}
-                  onFocus={() => setIsShowKeyboard(true)}
+                  style={{
+                    ...styles.input,
+                    marginBottom: 16,
+                    backgroundColor: isFocusedE ? '#FFFFFF' : '#F6F6F6',
+                    color: isFocusedE ? '#212121' : '#BDBDBD',
+                    borderColor: isFocusedE ? '#FF6C00' : '#E8E8E8',
+                  }}
+                  placeholder="Email"
+                  onFocus={() => {
+                    setIsShowKeyboard(true);
+                    setIsFocusedE(true);
+                  }}
+                  onBlur={() => setIsFocusedE(false)}
                   value={state.email}
-                  onChange={nativeEvent => console.log(nativeEvent)}
-                  onChangeText={value => setstate(prevState => ({ ...prevState, email: value }))}
+                  onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
                 />
               </View>
-              <View style={{ marginTop: 20 }}>
-                <Text style={styles.inputTitle}>PASSWORD</Text>
+              <View
+                style={{
+                  ...styles.inputWrapper,
+                  width: dimensions,
+                }}
+              >
                 <TextInput
-                  style={styles.input}
-                  textAlign={'center'}
+                  style={{
+                    ...styles.input,
+                    backgroundColor: isFocusedP ? '#FFFFFF' : '#F6F6F6',
+                    color: isFocusedP ? '#212121' : '#BDBDBD',
+                    borderColor: isFocusedP ? '#FF6C00' : '#E8E8E8',
+                  }}
+                  placeholder="Password"
                   secureTextEntry={true}
-                  onFocus={() => setIsShowKeyboard(true)}
+                  onFocus={() => {
+                    setIsShowKeyboard(true);
+                    setIsFocusedP(true);
+                  }}
+                  onBlur={() => setIsFocusedP(false)}
                   value={state.password}
-                  onChangeText={value => setstate(prevState => ({ ...prevState, password: value }))}
+                  onChangeText={value => setState(prevState => ({ ...prevState, password: value }))}
                 />
+                <TouchableOpacity
+                  style={styles.inputBtn}
+                  activeOpacity={0.7}
+                  onPress={() => setHiddenPass(!hiddenPass)}
+                >
+                  <Text style={{ ...styles.text, color: '#1B4371' }}>
+                    {hiddenPass ? 'Show' : 'Hide'}
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={keyboardHide}>
-                <Text style={styles.btnTitle}>SIGN IN</Text>
+              <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={onSubmit}>
+                <Text style={styles.btnTitle}>Login</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.btnGoRegister}
+                onPress={() => console.log('go to Register Page')}
+              >
+                <Text style={styles.btnGoRegisterText}>No account? Sign up</Text>
               </TouchableOpacity>
             </View>
-          </KeyboardAvoidingView>
+          </View>
         </ImageBackground>
-      </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 }
@@ -99,62 +145,75 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
     backgroundColor: '#fff',
+    alignItems: 'center',
   },
   image: {
     flex: 1,
     resizeMode: 'cover',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+  },
+  inputWrapper: {
+    alignItems: 'stretch',
+    position: 'relative',
   },
   input: {
+    width: '100%',
+    height: 50,
+    padding: 16,
     borderWidth: 1,
-    borderColor: '#f0f8ff',
-    height: 40,
-    borderRadius: 6,
-
-    color: '#f0f8ff',
+    borderColor: '#BDBDBD',
+    borderRadius: 8,
+  },
+  inputBtn: {
+    position: 'absolute',
+    top: '30%',
+    right: 40,
+    backgroundColor: 'transparent',
+    color: '#1B4371',
   },
   form: {
-    // marginHorizontal: 40,
-  },
-  inputTitle: {
-    color: '#f0f8ff',
-    marginBottom: 10,
-    fontSize: 18,
-    fontFamily: 'Roboto-Regular',
+    flex: 1,
+    backgroundColor: '#fff',
   },
   btn: {
-    borderRadius: 6,
-    borderWidth: 1,
-    height: 40,
-    marginTop: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 20,
+    padding: 16,
+    marginTop: 43,
+    color: '#fff',
+    borderRadius: 100,
     ...Platform.select({
       ios: {
         backgroundColor: 'transparent',
         borderColor: '#f0f8ff',
       },
       android: {
-        backgroundColor: '#4169e1',
+        backgroundColor: '#FF6C00',
         borderColor: 'transparent',
       },
     }),
   },
   btnTitle: {
-    color: Platform.OS === 'ios' ? '#4169e1' : '#f0f8ff',
-    fontSize: 18,
+    color: Platform.OS === 'ios' ? '#4169e1' : '#FFFFFF',
+    fontWeight: '400',
+    fontSize: 16,
+    textAlign: 'center',
     fontFamily: 'Roboto-Regular',
   },
-  header: {
-    alignItems: 'center',
-    marginBottom: 120,
-  },
   headerTitle: {
-    fontSize: 40,
-    color: '#f0f8ff',
+    marginTop: 32,
+    marginBottom: 32,
+    fontSize: 30,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  btnGoRegister: {
+    alignItems: 'center',
+    marginTop: 16,
+    marginBottom: 111,
+  },
+  btnGoRegisterText: {
+    color: '#000000',
     fontFamily: 'Roboto-Regular',
   },
 });

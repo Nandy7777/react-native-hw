@@ -19,8 +19,8 @@ export default function App() {
     <>
       <StatusBar />
 
-      <RegistrationScreen />
-      {/* <LoginScreen /> */}
+      {/* <RegistrationScreen /> */}
+      <LoginScreen />
     </>
   );
 }
