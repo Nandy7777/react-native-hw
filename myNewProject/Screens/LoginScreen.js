@@ -19,7 +19,7 @@ const initialState = {
   password: '',
 };
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   console.log(Platform.OS);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
@@ -59,14 +59,17 @@ export default function LoginScreen() {
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <KeyboardAvoidingView
-        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <ImageBackground style={styles.image} source={require('../assets/images/back-ground.jpg')}>
+        <ImageBackground
+          style={styles.image}
+          source={require("../assets/images/back-ground.jpg")}
+        >
           <View
             style={{
               ...styles.container,
-              position: 'relative',
+              position: "relative",
               marginTop: isShowKeyboard ? 130 : 273,
             }}
           >
@@ -77,9 +80,9 @@ export default function LoginScreen() {
                   style={{
                     ...styles.input,
                     marginBottom: 16,
-                    backgroundColor: isFocusedE ? '#FFFFFF' : '#F6F6F6',
-                    color: isFocusedE ? '#212121' : '#BDBDBD',
-                    borderColor: isFocusedE ? '#FF6C00' : '#E8E8E8',
+                    backgroundColor: isFocusedE ? "#FFFFFF" : "#F6F6F6",
+                    color: isFocusedE ? "#212121" : "#BDBDBD",
+                    borderColor: isFocusedE ? "#FF6C00" : "#E8E8E8",
                   }}
                   placeholder="Email"
                   onFocus={() => {
@@ -88,7 +91,9 @@ export default function LoginScreen() {
                   }}
                   onBlur={() => setIsFocusedE(false)}
                   value={state.email}
-                  onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
+                  onChangeText={(value) =>
+                    setState((prevState) => ({ ...prevState, email: value }))
+                  }
                 />
               </View>
               <View
@@ -100,9 +105,9 @@ export default function LoginScreen() {
                 <TextInput
                   style={{
                     ...styles.input,
-                    backgroundColor: isFocusedP ? '#FFFFFF' : '#F6F6F6',
-                    color: isFocusedP ? '#212121' : '#BDBDBD',
-                    borderColor: isFocusedP ? '#FF6C00' : '#E8E8E8',
+                    backgroundColor: isFocusedP ? "#FFFFFF" : "#F6F6F6",
+                    color: isFocusedP ? "#212121" : "#BDBDBD",
+                    borderColor: isFocusedP ? "#FF6C00" : "#E8E8E8",
                   }}
                   placeholder="Password"
                   secureTextEntry={true}
@@ -112,27 +117,35 @@ export default function LoginScreen() {
                   }}
                   onBlur={() => setIsFocusedP(false)}
                   value={state.password}
-                  onChangeText={value => setState(prevState => ({ ...prevState, password: value }))}
+                  onChangeText={(value) =>
+                    setState((prevState) => ({ ...prevState, password: value }))
+                  }
                 />
                 <TouchableOpacity
                   style={styles.inputBtn}
                   activeOpacity={0.7}
                   onPress={() => setHiddenPass(!hiddenPass)}
                 >
-                  <Text style={{ ...styles.text, color: '#1B4371' }}>
-                    {hiddenPass ? 'Show' : 'Hide'}
+                  <Text style={{ ...styles.text, color: "#1B4371" }}>
+                    {hiddenPass ? "Show" : "Hide"}
                   </Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={onSubmit}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.btn}
+                onPress={onSubmit}
+              >
                 <Text style={styles.btnTitle}>Login</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.btnGoRegister}
-                onPress={() => console.log('go to Register Page')}
+                onPress={() => navigation.navigate("RegistrationScreen")}
               >
-                <Text style={styles.btnGoRegisterText}>No account? Sign up</Text>
+                <Text style={styles.btnGoRegisterText}>
+                  No account? Sign up
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

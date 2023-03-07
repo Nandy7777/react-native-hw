@@ -20,7 +20,7 @@ const initialState = {
   nickname: '',
 };
 
-export default function RegistrationScreen() {
+export default function RegistrationScreen({ navigation }) {
   console.log(Platform.OS);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
@@ -30,24 +30,24 @@ export default function RegistrationScreen() {
   const [hiddenPass, setHiddenPass] = useState(true);
 
   const keyboardHide = () => {
-    setIsShowKeyboard(false); 
+    setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
 
   const onSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log('state:', state);
+    console.log("state:", state);
     setState(initialState);
   };
 
-  const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <KeyboardAvoidingView
-        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
         <View style={styles.container}>
@@ -56,11 +56,11 @@ export default function RegistrationScreen() {
               ...styles.image,
               width: windowWidth,
               height: windowHeight,
-              position: 'absolute',
+              position: "absolute",
               top: 0,
               left: 0,
             }}
-            source={require('../assets/images/back-ground.jpg')}
+            source={require("../assets/images/back-ground.jpg")}
           >
             <View
               style={{
@@ -70,7 +70,7 @@ export default function RegistrationScreen() {
             >
               <View style={styles.photoFrame}>
                 <View style={styles.btnAdd}>
-                  <Image source={require('../assets/images/add.png')} />
+                  <Image source={require("../assets/images/add.png")} />
                 </View>
               </View>
               <View style={styles.form}>
@@ -81,9 +81,9 @@ export default function RegistrationScreen() {
                   <TextInput
                     style={{
                       ...styles.input,
-                      backgroundColor: isFocusedL ? '#FFFFFF' : '#F6F6F6',
-                      color: isFocusedL ? '#212121' : '#BDBDBD',
-                      borderColor: isFocusedL ? '#FF6C00' : '#E8E8E8',
+                      backgroundColor: isFocusedL ? "#FFFFFF" : "#F6F6F6",
+                      color: isFocusedL ? "#212121" : "#BDBDBD",
+                      borderColor: isFocusedL ? "#FF6C00" : "#E8E8E8",
                       marginBottom: 16,
                     }}
                     onFocus={() => {
@@ -93,8 +93,11 @@ export default function RegistrationScreen() {
                     onBlur={() => setIsFocusedL(false)}
                     placeholder="Login"
                     value={state.nickname}
-                    onChangeText={value =>
-                      setState(prevState => ({ ...prevState, nickname: value }))
+                    onChangeText={(value) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        nickname: value,
+                      }))
                     }
                   />
                 </View>
@@ -102,9 +105,9 @@ export default function RegistrationScreen() {
                   <TextInput
                     style={{
                       ...styles.input,
-                      backgroundColor: isFocusedE ? '#FFFFFF' : '#F6F6F6',
-                      color: isFocusedE ? '#212121' : '#BDBDBD',
-                      borderColor: isFocusedE ? '#FF6C00' : '#E8E8E8',
+                      backgroundColor: isFocusedE ? "#FFFFFF" : "#F6F6F6",
+                      color: isFocusedE ? "#212121" : "#BDBDBD",
+                      borderColor: isFocusedE ? "#FF6C00" : "#E8E8E8",
                       marginBottom: 16,
                     }}
                     onFocus={() => {
@@ -114,16 +117,18 @@ export default function RegistrationScreen() {
                     onBlur={() => setIsFocusedE(false)}
                     placeholder="Email"
                     value={state.email}
-                    onChangeText={value => setState(prevState => ({ ...prevState, email: value }))}
+                    onChangeText={(value) =>
+                      setState((prevState) => ({ ...prevState, email: value }))
+                    }
                   />
                 </View>
                 <View style={styles.inputWrap}>
                   <TextInput
                     style={{
                       ...styles.input,
-                      backgroundColor: isFocusedP ? '#FFFFFF' : '#F6F6F6',
-                      color: isFocusedP ? '#212121' : '#BDBDBD',
-                      borderColor: isFocusedP ? '#FF6C00' : '#E8E8E8',
+                      backgroundColor: isFocusedP ? "#FFFFFF" : "#F6F6F6",
+                      color: isFocusedP ? "#212121" : "#BDBDBD",
+                      borderColor: isFocusedP ? "#FF6C00" : "#E8E8E8",
                     }}
                     placeholder="Password"
                     secureTextEntry={true}
@@ -133,8 +138,11 @@ export default function RegistrationScreen() {
                     }}
                     onBlur={() => setIsFocusedP(false)}
                     value={state.password}
-                    onChangeText={value =>
-                      setState(prevState => ({ ...prevState, password: value }))
+                    onChangeText={(value) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        password: value,
+                      }))
                     }
                   />
                   <TouchableOpacity
@@ -142,20 +150,26 @@ export default function RegistrationScreen() {
                     activeOpacity={0.7}
                     onPress={() => setHiddenPass(!hiddenPass)}
                   >
-                    <Text style={{ ...styles.text, color: '#1B4371' }}>
-                      {hiddenPass ? 'Show' : 'Hide'}
+                    <Text style={{ ...styles.text, color: "#1B4371" }}>
+                      {hiddenPass ? "Show" : "Hide"}
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity activeOpacity={0.8} style={styles.btnSubmit} onPress={onSubmit}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.btnSubmit}
+                  onPress={onSubmit}
+                >
                   <Text style={styles.btnSubmitText}>SIGN UP</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={styles.btnGoLogin}
-                  onPress={() => console.log('go to Login Page')}
+                  onPress={() => navigation.navigate("LoginScreen")}
                 >
-                  <Text style={styles.btnGoLoginText}>Already have an account? log in</Text>
+                  <Text style={styles.btnGoLoginText}>
+                    Already have an account? log in
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
