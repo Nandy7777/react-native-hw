@@ -64,7 +64,7 @@ export default function LoginScreen({ navigation }) {
       >
         <ImageBackground
           style={styles.image}
-          source={require("../assets/images/back-ground.jpg")}
+          source={require("../../assets/images/back-ground.jpg")}
         >
           <View
             style={{
@@ -141,10 +141,11 @@ export default function LoginScreen({ navigation }) {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.btnGoRegister}
-                onPress={() => navigation.navigate("RegistrationScreen")}
+                onPress={() => navigation.navigate("Register")}
               >
                 <Text style={styles.btnGoRegisterText}>
-                  No account? Sign up
+                  No account? &nbsp;
+                  <Text style={styles.btnGoRegisterText}>Sign up</Text>
                 </Text>
               </TouchableOpacity>
             </View>
@@ -228,5 +229,6 @@ const styles = StyleSheet.create({
   btnGoRegisterText: {
     color: '#000000',
     fontFamily: 'Roboto-Regular',
+    marginRight: 5,
   },
 });

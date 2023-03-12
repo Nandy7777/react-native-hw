@@ -60,7 +60,7 @@ export default function RegistrationScreen({ navigation }) {
               top: 0,
               left: 0,
             }}
-            source={require("../assets/images/back-ground.jpg")}
+            source={require("../../assets/images/back-ground.jpg")}
           >
             <View
               style={{
@@ -70,7 +70,7 @@ export default function RegistrationScreen({ navigation }) {
             >
               <View style={styles.photoFrame}>
                 <View style={styles.btnAdd}>
-                  <Image source={require("../assets/images/add.png")} />
+                  <Image source={require("../../assets/images/add.png")} />
                 </View>
               </View>
               <View style={styles.form}>
@@ -165,10 +165,11 @@ export default function RegistrationScreen({ navigation }) {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={styles.btnGoLogin}
-                  onPress={() => navigation.navigate("LoginScreen")}
+                  onPress={() => navigation.navigate("Login")}
                 >
                   <Text style={styles.btnGoLoginText}>
-                    Already have an account? log in
+                    Already have an account? &nbsp;
+                    <Text style={styles.btnGoLoginText}>log in</Text>
                   </Text>
                 </TouchableOpacity>
               </View>
