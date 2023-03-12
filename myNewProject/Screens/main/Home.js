@@ -10,10 +10,9 @@ import ProfileScreen from "./ProfileScreen";
 
 const MainTab = createBottomTabNavigator(); 
 
-const Home = () => {
+const Home = ({ navigation }) => {
   return (
     <MainTab.Navigator
-      tabBarOptions={{ showLabel: false }}
       screenOptions={{
         tabBarActiveTintColor: "#FF6C00",
         tabBarStyle: styles.tabBar,
