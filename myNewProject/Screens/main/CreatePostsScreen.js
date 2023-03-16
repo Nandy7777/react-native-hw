@@ -1,10 +1,21 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import {Camera } from "expo-camera";
 
 const CreatePostsScreen = () => {
+ 
   return (
     <View style={styles.container}>
-      <Text>CreatePostsScreen</Text>
+      <Camera style={styles.camera}>
+        <TouchableOpacity>
+
+        </TouchableOpacity>
+      </Camera>
     </View>
   );
 };
@@ -12,8 +23,11 @@ const CreatePostsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  camera: {
+  
+    height: 240,
+    marginTop: 76,
   },
 });
 
