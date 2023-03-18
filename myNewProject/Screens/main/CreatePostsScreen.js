@@ -12,7 +12,7 @@ import { Camera } from "expo-camera";
 // import { shareAsync } from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
 
-const CreatePostsScreen = () => {
+const CreatePostsScreen = ({navigation}) => {
   // let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -46,8 +46,13 @@ const CreatePostsScreen = () => {
       base64: true,
       exif: false,
     };
-    const newPhoto = await camera.takePictureAsync(options);
-    setPhoto(newPhoto.uri);
+    const photo = await camera.takePictureAsync(options);
+    setPhoto(photo.uri);
+  }
+
+  const sendPhoto = () => {
+    console.log('mavigation', navigation)
+    navigation.navigate("Posts", { photo });
   }
    
   return (
@@ -61,7 +66,7 @@ const CreatePostsScreen = () => {
         </TouchableOpacity>
       </Camera>
       <View>
-        <TouchableOpacity onPress={takePhoto} style={styles.sendBtn}>
+        <TouchableOpacity onPress={sendPhoto} style={styles.sendBtn}>
           <Text style={styles.sendLabel}>SNAP</Text>
         </TouchableOpacity>
       </View>
