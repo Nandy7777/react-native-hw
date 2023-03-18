@@ -39,10 +39,11 @@ const Home = ({ navigation }) => {
         }}
       />
       <MainTab.Screen
-        name="CreatePosts"
+        name="Create posts"
         component={CreatePostsScreen}
         options={{
-          headerShown: false,
+          headerTitleAlign: "center",
+          // headerShown: false,
           tabBarIcon: ({ focused, size, color }) => (
             <Feather name="plus" size={24} color="white" />
           ),
@@ -51,7 +52,7 @@ const Home = ({ navigation }) => {
               {...props}
               style={styles.addBtn}
               onPress={() => {
-                navigation.navigate("CreatePosts");
+                navigation.navigate("Create posts");
               }}
             />
           ),

@@ -39,7 +39,7 @@ export const useRoute = (isAuth) => {
           name="Home"
           component={Home}
         />
-        <AuthStack.Screen name="CreatePosts" component={CreatePostsScreen} />
+        <AuthStack.Screen name="Create posts" component={CreatePostsScreen} />
         <AuthStack.Screen name="Comments" component={CommentsScreen} />
       </AuthStack.Navigator>
     );
