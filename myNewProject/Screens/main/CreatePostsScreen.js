@@ -5,9 +5,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
 } from "react-native";
 import { Camera } from "expo-camera";
-
+import { MaterialIcons } from "@expo/vector-icons";
 // import { StatusBar } from "expo-status-bar";
 // import { shareAsync } from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
@@ -50,53 +54,92 @@ const CreatePostsScreen = ({navigation}) => {
     setPhoto(photo.uri);
   }
 
+  const readyToPublish = () => {
+    if (!photo) return false;
+    return true;
+  };
+
   const sendPhoto = () => {
+    if (!readyToPublish()) return;
     console.log('mavigation', navigation)
     navigation.navigate("Posts", { photo });
   }
-   
+
   return (
-    <View style={styles.container}>
-      <Camera style={styles.camera} ref={setCamera}>
-        <View style={styles.takePhotoContainer}>
-          <Image source={{ uri: photo }} style={{ height: 200, width: 200 }} />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Camera style={styles.camera} ref={setCamera}>
+            {photo && (
+              <View style={styles.takePhotoContainer}>
+                <Image source={{ uri: photo }} style={styles.image} />
+              </View>
+            )}
+
+            <TouchableOpacity
+              onPress={takePhoto}
+              activeOpacity={0.8}
+              style={styles.snapContainer}
+            >
+              <MaterialIcons name="photo-camera" size={24} color="#BDBDBD" />
+            </TouchableOpacity>
+          </Camera>
+          <Text style={styles.downloadPhotoText}>Download photo</Text>
+          <View>
+            <TouchableOpacity
+              onPress={sendPhoto}
+              style={{
+                ...styles.sendBtn,
+                backgroundColor: readyToPublish() ? "#FF6C00" : "#F6F6F6",
+              }}
+            >
+              <Text
+                style={{
+                  ...styles.sendLabel,
+                  color: readyToPublish() ? "#ffffff" : "#BDBDBD",
+                }}
+              >
+                PUBLISH
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity onPress={takePhoto} style={styles.snapContainer}>
-          <Text style={styles.snap}>SNAP</Text>
-        </TouchableOpacity>
-      </Camera>
-      <View>
-        <TouchableOpacity onPress={sendPhoto} style={styles.sendBtn}>
-          <Text style={styles.sendLabel}>SNAP</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 32,
+    paddingHorizontal: 16,
+    backgroundColor: "#ffffff",
   },
   camera: {
-    marginHorizontal: 16,
     borderRadius: 8,
     height: 240,
-    marginTop: 32,
     justifyContent: "center",
     alignItems: "center",
+    overflow: "hidden",
+  },
+  image: {
+    width: 200,
+    height: 120,
+    borderRadius: 8,
   },
   snap: {
     color: "#fff",
   },
   snapContainer: {
-    marginTop: 100,
-    marginLeft: 110,
-    borderWidth: 1,
-    borderColor: "#ff0000",
+    position: "absolute",
+    backgroundColor: "#FFFFFF",
     borderRadius: 50,
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -109,7 +152,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   sendBtn: {
-    marginHorizontal: 16,
     marginTop: 207,
     borderRadius: 100,
     backgroundColor: "#F6F6F6",
@@ -120,7 +162,14 @@ const styles = StyleSheet.create({
   },
   sendLabel: {
     color: "#BDBDBD",
-    fontSize: 16, 
+    fontSize: 16,
+  },
+  downloadPhotoText: {
+    marginBottom: 22,
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#BDBDBD",
   },
 });
 
