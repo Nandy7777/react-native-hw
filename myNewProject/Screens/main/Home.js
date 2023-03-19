@@ -100,6 +100,3 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
   },
 });
-
-
-

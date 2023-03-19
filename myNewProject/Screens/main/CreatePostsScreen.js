@@ -9,20 +9,25 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  TextInput,
 } from "react-native";
 import { Camera } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
-// import { StatusBar } from "expo-status-bar";
-// import { shareAsync } from "expo-sharing";
+import * as Location from "expo-location";
 import * as MediaLibrary from "expo-media-library";
+import { Feather } from "@expo/vector-icons";
 
 const CreatePostsScreen = ({navigation}) => {
   // let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
-  
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState();
+  const [title, setTitle] = useState("");
+  const [place, setPlace] = useState("");
+  // const [location, setLocation] = useState(null);
+  // const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -44,6 +49,31 @@ const CreatePostsScreen = ({navigation}) => {
     );
   }
 
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       setErrorMsg("Permission to access location was denied");
+  //       return;
+  //     }
+
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     setLocation(location);
+  //   })();
+  // }, []);
+
+  // let text = "Waiting..";
+  // if (errorMsg) {
+  //   text = errorMsg;
+  // } else if (location) {
+  //   text = JSON.stringify(location);
+  // }
+
   const takePhoto = async () => {
     const options = {
       quality: 1,
@@ -55,30 +85,32 @@ const CreatePostsScreen = ({navigation}) => {
   }
 
   const readyToPublish = () => {
-    if (!photo) return false;
+    if (!photo || !title || !place) return false;
     return true;
   };
 
-  const sendPhoto = () => {
+  const sendPhoto = async() => {
     if (!readyToPublish()) return;
-    console.log('mavigation', navigation)
-    navigation.navigate("Posts", { photo });
+    const response = await Location.getCurrentPositionAsync();
+    const location = {
+      longitude: response.coords.longitude,
+      latitude: response.coords.latitude,
+    };
+    navigation.navigate("Posts", { photo, title, place, location });
+    setPhoto("");
+    setTitle("");
+    setPlace("");
   }
-
+ 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
         <View style={styles.container}>
           <Camera style={styles.camera} ref={setCamera}>
-            {photo && (
-              <View style={styles.takePhotoContainer}>
-                <Image source={{ uri: photo }} style={styles.image} />
-              </View>
-            )}
-
+            {photo && <Image source={{ uri: photo }} style={styles.image} />}
             <TouchableOpacity
               onPress={takePhoto}
               activeOpacity={0.8}
@@ -87,8 +119,33 @@ const CreatePostsScreen = ({navigation}) => {
               <MaterialIcons name="photo-camera" size={24} color="#BDBDBD" />
             </TouchableOpacity>
           </Camera>
-          <Text style={styles.downloadPhotoText}>Download photo</Text>
+          <Text style={styles.downloadPhotoText}>
+            {photo ? "Edit photo" : "Download photo"}
+          </Text>
           <View>
+            <TextInput
+              onChangeText={setTitle}
+              value={title}
+              placeholder="Name..."
+              placeholderTextColor="#BDBDBD"
+              style={{ ...styles.input, marginTop: 32 }}
+            />
+            <View>
+              <Feather
+                name="map-pin"
+                size={24}
+                color="#BDBDBD"
+                style={styles.locationIcon}
+              />
+              <TextInput
+                onChangeText={setPlace}
+                value={place}
+                placeholder="Location..."
+                placeholderTextColor="#BDBDBD"
+                style={{ ...styles.input, marginTop: 16, paddingLeft: 28 }}
+              />
+            </View>
+
             <TouchableOpacity
               onPress={sendPhoto}
               style={{
@@ -107,15 +164,24 @@ const CreatePostsScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+        <View style={styles.btnTrashBox}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.btnTrash}
+            onPress={() => alert("delete?")}
+          >
+            <Feather name="trash-2" size={24} color="#BDBDBD" />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 32,
+
     paddingHorizontal: 16,
     backgroundColor: "#ffffff",
   },
@@ -131,9 +197,6 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 8,
   },
-  snap: {
-    color: "#fff",
-  },
   snapContainer: {
     position: "absolute",
     backgroundColor: "#FFFFFF",
@@ -143,19 +206,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  takePhotoContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    borderColor: "#fff",
-    borderWidth: 1,
-    borderRadius: 8,
-  },
   sendBtn: {
-    marginTop: 207,
+    marginTop: 32,
     borderRadius: 100,
     backgroundColor: "#F6F6F6",
-    borderWidth: 1,
     height: 51,
     justifyContent: "center",
     alignItems: "center",
@@ -165,11 +219,39 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   downloadPhotoText: {
-    marginBottom: 22,
+    marginTop: 8,
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: "#BDBDBD",
+  },
+  input: {
+    height: 50,
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E8E8E8",
+  },
+  locationIcon: {
+    position: "absolute",
+    top: 27,
+    left: 0,
+    marginRight: 4,
+  },
+  btnTrashBox: {
+    position: "absolute",
+    width: "100%",
+    bottom: 34,
+    alignItems: "center",
+  },
+  btnTrash: {
+    width: 70,
+    height: 40,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
